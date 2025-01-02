@@ -1,4 +1,11 @@
-
+#include <Adafruit_GFX.h>
+#include <Adafruit_GrayOLED.h>
+#include <Adafruit_SPITFT.h>
+#include <Adafruit_SPITFT_Macros.h>
+#include <gfxfont.h>
+#include <Arduino_GigaDisplay.h>
+#include <Arduino_GigaDisplayTouch.h>
+#include <Arduino_GigaDisplay_GFX.h>
 #include <Wire.h>
 #include <Ethernet.h>
 #include <ArduinoGraphics.h>
@@ -17,10 +24,12 @@
 #include <vector>
 #include "version.h"
 
+#define BLACK 0x0000
+
 //Globals are Serial, Serial1, Serial2, Serial3 for the 4 UARTS in the MEGA R1
 
 //Initialize Giga Display Shield with global application interface
-Arduino_H7_Video Display(800, 480, GigaDisplayShield);
+GigaDisplay_GFX* pDisplay;
 
 //buffer for serial output messages
 char buf[100];
@@ -37,18 +46,22 @@ void setup() {
   sprintf(buf, "Software P\N %.2i Revision %.2i.%.2i",
           APP_SW_PART, APP_REV_MAJOR, APP_REV_MINOR);
   Serial.println(buf);
-  //iniatizlie display output
-  Display.clear();
-  Display.beginDraw();
-  Display.stroke(255, 255, 255);
-  Display.text(buf, 50, 50);
-  Display.endDraw();
+  //initialize display interface
+  GigaDisplay_GFX Display;
+  Display.begin();
+  Display.setCursor(10, 10);
+  Display.setTextSize(5);
+  Display.print(buf);
+  //global interface for multi-threading
+  pDisplay = &Display;
 
   Serial.println("Initialization Complete - Starting Application");
 }
 
 void loop() {
+  pDisplay->fillScreen(BLACK);
   sprintf(buf, "App loop starting at memory address %p", (void*)loop);
+  pDisplay->
   Serial.println(buf);
   // put your main code here, to run repeatedly:
   while (1) {
