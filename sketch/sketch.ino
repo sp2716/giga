@@ -23,18 +23,28 @@
 #include <video_modes.h>
 #include <vector>
 #include "version.h"
+#include <lvgl.h>
+
 
 #define BLACK 0x0000
 
 //Globals are Serial, Serial1, Serial2, Serial3 for the 4 UARTS in the MEGA R1
 
 //Initialize Giga Display Shield with global application interface
-GigaDisplay_GFX* pDisplay;
+Arduino_H7_Video Display(800, 480, GigaDisplayShield);
+Arduino_GigaDisplayTouch TouchDetector;
 
 //buffer for serial output messages
 char buf[100];
 
+
+void* worker(void* vargs) {
+  return NULL;
+}
+
 void setup() {
+
+  delay(3000);
   // put your setup code here, to run once:
   //Initialize UART0
   Serial.begin(115200);
@@ -43,28 +53,49 @@ void setup() {
   //intialize I2C interface for sensors
   //Wire.begin();
 
-  sprintf(buf, "Software P\N %.2i Revision %.2i.%.2i",
-          APP_SW_PART, APP_REV_MAJOR, APP_REV_MINOR);
+  sprintf(buf, "Software P\N %s Revision %.2i.%.2i.%.2i",
+          APP_SW_PART, APP_REV_METRO, APP_REV_MAJOR, APP_REV_MINOR);
   Serial.println(buf);
   //initialize display interface
-  GigaDisplay_GFX Display;
-  Display.begin();
-  Display.setCursor(10, 10);
-  Display.setTextSize(5);
-  Display.print(buf);
-  //global interface for multi-threading
-  pDisplay = &Display;
 
-  Serial.println("Initialization Complete - Starting Application");
+  delay(3000);
+  Display.begin();
+  TouchDetector.begin();
+
+  //Display & Grid Setup
+  lv_obj_t* screen = lv_obj_create(lv_scr_act());
+  lv_obj_set_size(screen, Display.width(), Display.height());
+
+  static lv_coord_t col_dsc[] = { 370, 370, LV_GRID_TEMPLATE_LAST };
+  static lv_coord_t row_dsc[] = { 215, 215, 215, 215, LV_GRID_TEMPLATE_LAST };
+
+  lv_obj_t* grid = lv_obj_create(lv_scr_act());
+  lv_obj_set_grid_dsc_array(grid, col_dsc, row_dsc);
+  lv_obj_set_size(grid, Display.width(), Display.height());
+
+  //top left
+  lv_obj_t* obj;
+  obj = lv_obj_create(grid);
+  lv_obj_set_grid_cell(obj, LV_GRID_ALIGN_STRETCH, 0, 1,  //column
+                       LV_GRID_ALIGN_STRETCH, 0, 1);      //row
+
+  //bottom left
+  obj = lv_obj_create(grid);
+  lv_obj_set_grid_cell(obj, LV_GRID_ALIGN_STRETCH, 0, 1,  //column
+                       LV_GRID_ALIGN_STRETCH, 1, 1);      //row
+  //top right
+  obj = lv_obj_create(grid);
+  lv_obj_set_grid_cell(obj, LV_GRID_ALIGN_STRETCH, 1, 1,  //column
+                       LV_GRID_ALIGN_STRETCH, 0, 1);      //row
+
+  //bottom right
+  obj = lv_obj_create(grid);
+  lv_obj_set_grid_cell(obj, LV_GRID_ALIGN_STRETCH, 1, 1,  //column
+                       LV_GRID_ALIGN_STRETCH, 1, 1);      //row
 }
 
 void loop() {
-  pDisplay->fillScreen(BLACK);
-  sprintf(buf, "App loop starting at memory address %p", (void*)loop);
-  pDisplay->
-  Serial.println(buf);
-  // put your main code here, to run repeatedly:
-  while (1) {
-    delayMicroseconds(100 * 1000);  //100ms delay
-  }
+  
+  uint32_t msDelay = lv_timer_handler();
+  delay(msDelay);
 }
