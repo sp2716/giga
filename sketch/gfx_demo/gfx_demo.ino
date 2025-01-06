@@ -1,7 +1,12 @@
 #include "Arduino_GigaDisplay_GFX.h"
 #include "Fonts/FreeSans12pt7b.h"
+#include <Arduino_GigaDisplay.h>
+#include "Arduino_BMI270_BMM150.h"
+#include "Arduino_H7_Video.h"
+#include "Arduino_GigaDisplayTouch.h"
 #include <WiFi.h>
-#include <SDRAM.h>
+#include <lvgl.h>
+#include <PDM.h>
 #include "version.h"
 #include "ourtypes.h"
 ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
@@ -14,6 +19,8 @@ WiFiClient client;
 
 
 //Giga Display Shield Example
+Arduino_H7_Video Display(800,400,GigaDisplayShield);
+Arduino_GigaDisplayTouch TouchDetector;
 GigaDisplay_GFX tft;
 
 void ConfigureDisplay() {
