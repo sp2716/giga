@@ -1,5 +1,5 @@
 #include <Arduino.h>
-
+#include <pthread.h>
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -7,9 +7,17 @@ void setup() {
   //while(!Serial){}
   Serial.println("Starting Application");
 }
+
+void * worker(void * args){
+  while(1){
+    yield();
+  }
+}
+
 void loop() {
   static int n;
   // put your main code here, to run repeatedly:
+  
   Serial.print("Loop executed ");
   Serial.print(n++);
   Serial.println("times");

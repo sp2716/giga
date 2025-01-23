@@ -19,7 +19,7 @@ WiFiClient client;
 
 
 //Giga Display Shield Example
-Arduino_H7_Video Display(800,400,GigaDisplayShield);
+Arduino_H7_Video Display(800, 400, GigaDisplayShield);
 Arduino_GigaDisplayTouch TouchDetector;
 GigaDisplay_GFX tft;
 
@@ -29,10 +29,9 @@ void ConfigureDisplay() {
   tft.setTextWrap(1);
   tft.setFont(&FreeSans12pt7b);
   tft.fillScreen(BLACK);
-  tft.setCursor(0, 0);
+  tft.setCursor(0, 20);
   tft.setTextColor(WHITE);
   tft.setTextSize(1);
-  
 }
 
 bool ConfigureWifi() {
@@ -55,7 +54,7 @@ bool ConfigureWifi() {
 
 void printWifiStatus() {
   tft.fillScreen(BLACK);
-  tft.setCursor(0, 0);
+  tft.setCursor(10, 0);
   tft.print("SSID: ");
   tft.println(WiFi.SSID());
   tft.print("MAC Address: ");
@@ -73,5 +72,23 @@ void setup() {
 }
 
 void loop(void) {
-  
+  int last_rssi = 0;
+  tft.fillScreen(BLACK);
+  tft.print("Starting main loop");
+  while (1) {
+    //tft.fillScreen(BLACK);
+    tft.setCursor(0, 100);
+    //Set color to background to "erase" the old reading and text
+    tft.setTextColor(BLACK);
+    tft.print("Rx Signal Strength:");
+    tft.print(last_rssi);
+    tft.println(" dBm");
+    //real reading update here
+    tft.setCursor(0, 100);
+    tft.setTextColor(WHITE)
+    last_rssi = WiFi.RSSI();
+    tft.print(WiFi.RSSI());
+    tft.println(" dBm");
+    delay(5000);
+  }
 }

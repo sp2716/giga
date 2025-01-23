@@ -15,9 +15,10 @@
 
 
 #include "Arduino_H7_Video.h"
-#include "Arduino_GigaDisplayTouch.h"
+#include <Arduino_GigaDisplayTouch.h>
 #include <Arduino_GigaDisplay.h>
 #include "Arduino_BMI270_BMM150.h"
+
 
 #include <lvgl.h>
 #include <PDM.h>
@@ -148,11 +149,11 @@ void DisplaySetup() {
   lv_obj_set_grid_cell(obj, LV_GRID_ALIGN_STRETCH, 0, 1,
                         LV_GRID_ALIGN_STRETCH, 0, 1);
 
-  LV_IMG_DECLARE(ProtoStaxLogo_200x150);
-  lv_obj_t * img1 = lv_img_create(obj);
-  lv_img_set_src(img1, &ProtoStaxLogo_200x150);
-  lv_obj_align(img1, LV_ALIGN_CENTER, 0, 0);
-  lv_obj_set_size(img1, 200, 150);
+  //LV_IMG_DECLARE(ProtoStaxLogo_200x150);
+  //lv_obj_t * img1 = lv_img_create(obj);
+  //lv_img_set_src(img1, &ProtoStaxLogo_200x150);
+  //lv_obj_align(img1, LV_ALIGN_CENTER, 0, 0);
+  //lv_obj_set_size(img1, 200, 150);
 
   /* [1;0] - Chart MIC */
   obj = lv_obj_create(cont);
